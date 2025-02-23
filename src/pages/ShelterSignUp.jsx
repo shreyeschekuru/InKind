@@ -42,17 +42,17 @@
 //         const uid = auth.currentUser.uid;
 //         const usersRef = doc(db, 'users', uid);
 
-//         const docData = 
-//         {
-//             addressLine: addressLine, 
-//             city: city,
-//             firstName: firstName,
-//             lastName: lastName,
-//             zipCode: zipCode,
-//             state: state
-//         }
-//         setDoc(usersRef, docData);
-//         navigate("/dashboard");
+        // const docData = 
+        // {
+        //     addressLine: addressLine, 
+        //     city: city,
+        //     firstName: firstName,
+        //     lastName: lastName,
+        //     zipCode: zipCode,
+        //     state: state
+        // }
+        // setDoc(usersRef, docData);
+        // navigate("/dashboard");
 //       }
 //     } catch (error) {
 //       alert(error);
@@ -161,21 +161,36 @@ const states = createListCollection({
   ],
 });
 
-const Signup = () => {
+const ShelterSignUp = () => {
   const [email, setEmail] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [organizationName, setOrganizationName] = useState("");
   const [password, setPassword] = useState("");
+  const [addressLine, setAddressLine] = useState("");
+  const [city, setCity] = useState("");
+  const [zipCode, setZipCode] = useState("");
   const [state, setState] = useState("");
   const navigate = useNavigate();
 
   const handleSignUp = async () => {
     try {
-      if (!email || !firstName || !lastName || !password) {
+      if (!email || !organizationName  || !password || !addressLine || !city || !zipCode || !state) {
         alert("Please fill in all fields");
         return;
       }
       await createUserWithEmailAndPassword(auth, email, password);
+
+      const uid = auth.currentUser.uid;
+      const usersRef = doc(db, 'shelters', uid);
+      const docData = 
+      {
+        email: email,
+        organizationName: organizationName,
+        addressLine: addressLine,
+        city: city,
+        zipCode: zipCode, 
+        state: state
+      }
+      setDoc(usersRef, docData);
       navigate("/dashboard");
     } catch (error) {
       alert(error.message);
@@ -186,7 +201,7 @@ const Signup = () => {
     <>
       <NavBar />
       <Container maxW="100vw" h="100vh" display="flex" alignItems="center" justifyContent="center" bg="#FFDDD2">
-        <Box marginBottom="15%" p={8} bg="#EDF6F9" borderRadius="lg" shadow="xl" w={{ base: "90%", md: "400px" }} textAlign="center">
+        <Box marginBottom="10%" p={8} bg="#EDF6F9" borderRadius="lg" shadow="xl" w={{ base: "90%", md: "400px" }} textAlign="center">
           <Box bg="#EDF6F9" p={4} borderRadius="full" display="inline-block" mb={4}>
             <Image src="/src/assets/logo.png" alt="Logo" w={20} />
           </Box>
@@ -194,10 +209,10 @@ const Signup = () => {
             Create an Account
           </Heading>
           <VStack spacing={4}>
-            <Input
-              placeholder="First Name"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
+          <Input
+              placeholder="Organization Name"
+              value={organizationName}
+              onChange={(e) => setOrganizationName(e.target.value)}
               bg="white"
               borderRadius="full"
               p={3}
@@ -205,9 +220,9 @@ const Signup = () => {
               _placeholder={{ color: "#83C5BE" }} // Optional: Change placeholder color
             />
             <Input
-              placeholder="Last Name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Address Line"
+              value={addressLine}
+              onChange={(e) => setAddressLine(e.target.value)}
               bg="white"
               borderRadius="full"
               p={3}
@@ -215,6 +230,26 @@ const Signup = () => {
               _placeholder={{ color: "#83C5BE" }} // Optional: Change placeholder color
             />
             <Input
+              placeholder="City"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              bg="white"
+              borderRadius="full"
+              p={3}
+              color="#006D77" // Set text color to #006D77
+              _placeholder={{ color: "#83C5BE" }} // Optional: Change placeholder color
+            />
+            <Input
+              placeholder="Zip Code"
+              value={zipCode}
+              onChange={(e) => setZipCode(e.target.value)}
+              bg="white"
+              borderRadius="full"
+              p={3}
+              color="#006D77" // Set text color to #006D77
+              _placeholder={{ color: "#83C5BE" }} // Optional: Change placeholder color
+            />
+              <Input
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -257,4 +292,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default ShelterSignUp;

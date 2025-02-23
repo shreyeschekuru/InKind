@@ -13,6 +13,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import Home from "./pages/Home";
 import Signup from "./pages/Signup";
 import About from "./pages/About"; // Import the About component
+import ShelterSignUp from "./pages/ShelterSignUp"
 import "@fontsource-variable/lexend-deca/index.css";
 
 const system = createSystem(defaultConfig, {
@@ -34,10 +35,10 @@ createRoot(document.getElementById("root")).render(
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/auth" element={<Auth />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/about" element={<About />} /> 
+            <Route path="/sheltersignup" element={<ShelterSignUp />} /> 
           </Routes>
         </ChakraProvider>
       </BrowserRouter>
