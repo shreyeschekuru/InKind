@@ -19,7 +19,6 @@ const Auth = () => {
       const docRef = doc(db, "users", auth.currentUser.uid);
       const docSnap = await getDoc(docRef);
       console.log(docSnap.data())
-      name = docSnap.data().firstName;
       navigate("/dashboard");
     } catch (error) {
       alert(error.message);

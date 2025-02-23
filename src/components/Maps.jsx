@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
-import { Text, Container } from "@chakra-ui/react";
+import { Box, Input, Button, VStack, Text, Container, Heading } from "@chakra-ui/react";
+
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyAUTOys0_gcR602EgFBLdWyIuZqkJ97AyE";
 
@@ -9,9 +10,9 @@ function Maps() {
   const [manualAddress, setManualAddress] = useState("")
   const [error, setError] = useState(false);
   const [places, setPlaces] = useState([]);
-
   const mapRef = useRef(null);
 
+  const DEFAULT_LOCATION = {lat: 38.89773032403587 ,lng: -77.03652280501576}
 
   const loadGoogleMaps = () => {
     if (window.google && window.google.maps) {
@@ -34,12 +35,12 @@ function Maps() {
     if (!userLocation || mapRef.current) return; // Prevent duplicate initialization
 
     mapRef.current = new window.google.maps.Map(document.getElementById("map"), {
-      center: userLocation,
+      center: userLocation || DEFAULT_LOCATION,
       zoom: 13,
     });
 
     setMap(mapRef.current);
-    searchNearbyPlaces(mapRef.current, userLocation);
+    searchNearbyPlaces(mapRef.current, userLocation || DEFAULT_LOCATION);
   };
 
 
@@ -69,6 +70,7 @@ function Maps() {
 
   useEffect(() => {
     if (!navigator.geolocation) {
+      setUserLocation(DEFAULT_LOCATION);
       setError(true);
       return;
     }
@@ -82,10 +84,11 @@ function Maps() {
         setUserLocation(location);
       },
       (error) => {
+        setUserLocation(DEFAULT_LOCATION);
         console.error("Error getting user location:", error);
         setError(true);
       },
-      { timeout: 5000 }
+      { timeout: 1000 }
     );
   }, []);
 
@@ -102,6 +105,11 @@ function Maps() {
         const location = data.results[0].geometry.location;
         setUserLocation({ lat: location.lat, lng: location.lng });
         setError(false); 
+
+        if (mapRef.current) {
+          mapRef.current.setCenter(location);
+          searchNearbyPlaces(mapRef.current, location);
+        }
       } else {
         console.error("Address not found");
         alert("Invalid address. Try again.");
@@ -119,31 +127,61 @@ function Maps() {
   }, [userLocation]);
 
   return (
-    <Container>
-      {error && (
-        <div className="manual-input">
-          <input
-            type="text"
-            placeholder="Enter your address"
-            value={manualAddress}
-            onChange={(e) => setManualAddress(e.target.value)}
-          />
-          <button onClick={handleManualLocation}>Submit</button>
-        </div>
-)}
+    <Container maxW="100vw" p={5}>
+      <Box display="flex" justifyContent="center" alignItems="center" flexDirection={{ base: "column", md: "row" }}>
 
-      <div id="map" style={{ width: "50%", height: "500px", border: "1px solid black", margin: "auto", marginTop:"1%"}}></div>
-      <div style={{margin:"5%", display:"flex", alignItems:"center", flexDirection:"column"}}>
-        <h3 style={{color:"#006D77"}}>Places Found:</h3>
-        <ol style={{color:"#006D77"}}>
-          {places.map((place, index) => (
-            <li key={place.place_id}>{index+1}.{" "}{place.name}</li>
-          ))}
-        </ol>
-      </div>
-      
+        <Box flex="1" minW="50%" h="500px" border="2px solid #006D77" borderRadius="lg" boxShadow="xl" id="map" />
 
+        <VStack flex="1" spacing={4} align="center" p={5}>
+          <Heading as="h3" size="md" color="#006D77">Find Nearby Food Banks</Heading>
+
+          <VStack spacing={2} w="80%">
+            <Input
+              placeholder="Enter your address"
+              value={manualAddress}
+              onChange={(e) => setManualAddress(e.target.value)}
+              bg="white"
+              color="#006D77"
+              borderColor="#83C5BE"
+              focusBorderColor="#E29578"
+              borderRadius="full"
+              p={3}
+              _placeholder={{ color: "#83C5BE" }}
+            />
+            <Button
+              bg="white"
+              color="rgba(255, 183, 77, 1)"
+              _hover={{ bg: "gray.200" }}
+              onClick={handleManualLocation}
+              borderRadius="full"
+              p={3}
+              w="full"
+            >
+              Submit
+            </Button>
+          </VStack>
+
+          <Box  
+            textAlign="left" 
+            bg="white"
+            border="2px solid #83C5BE"
+            borderRadius="lg"
+            p={4}
+            w="80%"
+            mt={4}>
+            <Text fontSize="lg" color="#006D77" fontWeight="bold">Places Found:</Text>
+            <ol style={{ color: "#006D77", listStyleType: "decimal", paddingLeft: "20px" }}>
+              {places.map((place, index) => (
+                <li key={place.place_id} style={{ margin: "5px 0" }}>
+                  {place.name}
+                </li>
+              ))}
+            </ol>
+          </Box>
+        </VStack>
+      </Box>
     </Container>
+
   );
 }
 
