@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# KEYS
+./src/config/firebase.jsx
+./src/pages/components/firebase.jsx
