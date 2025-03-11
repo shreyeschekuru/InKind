@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { Box, Input, Button, VStack, Text, Container, Heading } from "@chakra-ui/react";
 
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyAUTOys0_gcR602EgFBLdWyIuZqkJ97AyE";
+const GOOGLE_MAPS_API_KEY = "INSERT_HERE";
 
 function Maps() {
   const [map, setMap] = useState(null);
